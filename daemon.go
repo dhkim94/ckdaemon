@@ -10,12 +10,17 @@ var errNotSupported = errors.New("daemon: non posix OS in not supported")
 
 // 프로세스 마크 - 시스템 환경 변수 _GO_DAEMON=1 으로 설정 된다.
 const (
-	MARK_NAME = "_GO_DEAMON"
-	MARK_VALUE = "1"
+	MARK_NAME	= "_GO_DEAMON"
+	MARK_VALUE	= "1"
 )
 
-// log 및 pid 파일의 기본 파일 퍼미션
-const FILE_PERM = os.FileMode(0644)
+const (
+	// log 및 pid 파일의 기본 파일 퍼미션
+	FILE_PERM	= os.FileMode(0644)
+
+	// 디렉토리 생성시 퍼미션
+	DIR_PERM	= os.FileMode(0775)
+)
 
 // 데몬 프로세스의 context
 type Context struct {

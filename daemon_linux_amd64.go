@@ -7,6 +7,7 @@ import (
 	"github.com/kardianos/osext"
 	"fmt"
 	glog "log"
+	"path/filepath"
 )
 
 var initialized = false
@@ -138,16 +139,30 @@ func (d *Context) openFiles() (err error) {
 	}
 
 	if len(d.PidFileName) > 0 {
+		// pid 파일 디렉토리가 존재하지 않으면 만든다.
+		onlyPidDir := filepath.Dir(d.PidFileName)
+		if _, err := os.Stat(onlyPidDir); os.IsNotExist(err) {
+			os.MkdirAll(onlyPidDir, DIR_PERM)
+		}
+
 		if d.pidFile, err = OpenLockFile(d.PidFileName, d.PidFilePerm); err != nil {
+			fmt.Println(err)
 			return
 		}
 
 		if err = d.pidFile.Lock(); err != nil {
+			fmt.Println(err)
 			return
 		}
 	}
 
 	if len(d.LogFileName) > 0 {
+		// log 파일 디렉토리가 존재하지 않으면 만든다.
+		onlyLogDir := filepath.Dir(d.LogFileName)
+		if _, err := os.Stat(onlyLogDir); os.IsNotExist(err) {
+			os.MkdirAll(onlyLogDir, DIR_PERM)
+		}
+
 		if d.logFile, err = os.OpenFile(d.LogFileName,
 			os.O_WRONLY|os.O_CREATE|os.O_APPEND, d.LogFilePerm); err != nil {
 			return
